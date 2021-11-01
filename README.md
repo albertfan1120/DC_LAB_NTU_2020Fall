@@ -1,1 +1,2 @@
-# NTUEE_2020Fall DC_LAB
+# Digital Circuit Lab
+## 2020Fall
