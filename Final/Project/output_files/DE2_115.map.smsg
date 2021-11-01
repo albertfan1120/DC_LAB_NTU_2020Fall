@@ -1,0 +1,17 @@
+Info (10281): Verilog HDL Declaration information at VGA.sv(7): object "VGA_R" differs only in case from object "vga_r" in the same scope
+Info (10281): Verilog HDL Declaration information at VGA.sv(8): object "VGA_G" differs only in case from object "vga_g" in the same scope
+Info (10281): Verilog HDL Declaration information at VGA.sv(9): object "VGA_B" differs only in case from object "vga_b" in the same scope
+Info (10281): Verilog HDL Declaration information at VGA.sv(11): object "VGA_HS" differs only in case from object "vga_hs" in the same scope
+Info (10281): Verilog HDL Declaration information at VGA.sv(12): object "VGA_VS" differs only in case from object "vga_vs" in the same scope
+Info (10281): Verilog HDL Declaration information at VGA.sv(15): object "SRAM_ADDR" differs only in case from object "sram_addr" in the same scope
+Warning (10273): Verilog HDL warning at Top.sv(140): extended using "x" or "z"
+Warning (10273): Verilog HDL warning at Top.sv(156): extended using "x" or "z"
+Warning (10273): Verilog HDL warning at Top.sv(169): extended using "x" or "z"
+Info (10281): Verilog HDL Declaration information at ImageInitializer.sv(28): object "FINISH" differs only in case from object "finish" in the same scope
+Info (10281): Verilog HDL Declaration information at dark.v(5): object "ANS" differs only in case from object "ans" in the same scope
+Info (10281): Verilog HDL Declaration information at dark.v(6): object "SRAM_ADDR" differs only in case from object "sram_addr" in the same scope
+Info (10281): Verilog HDL Declaration information at dark.v(7): object "SRAM_WRITE" differs only in case from object "sram_write" in the same scope
+Info (10281): Verilog HDL Declaration information at Blur.sv(31): object "FINISH" differs only in case from object "finish" in the same scope
+Info (10281): Verilog HDL Declaration information at Blur.sv(9): object "SRAM_WRITE" differs only in case from object "sram_write" in the same scope
+Info (10281): Verilog HDL Declaration information at Blur.sv(8): object "SRAM_ADDR" differs only in case from object "sram_addr" in the same scope
+Info (10281): Verilog HDL Declaration information at MulDiv.v(17): object "out" differs only in case from object "OUT" in the same scope

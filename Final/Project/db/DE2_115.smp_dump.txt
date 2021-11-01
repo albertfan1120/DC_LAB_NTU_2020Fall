@@ -1,0 +1,65 @@
+
+State Machine - |DE2_115|rsa_qsys:my_qsys|Top:version1_0|Blur:B0|state
+Name state.LOAD_RIGHT state.BUFFER2 state.BUFFER state.SEND state.COMPUTE state.PREPARE state.FINISH state.GET_Y state.MAX state.BLUR state.TAKE_DATA state.FIRST_ROW state.IDLE 
+state.IDLE 0 0 0 0 0 0 0 0 0 0 0 0 0 
+state.FIRST_ROW 0 0 0 0 0 0 0 0 0 0 0 1 1 
+state.TAKE_DATA 0 0 0 0 0 0 0 0 0 0 1 0 1 
+state.BLUR 0 0 0 0 0 0 0 0 0 1 0 0 1 
+state.MAX 0 0 0 0 0 0 0 0 1 0 0 0 1 
+state.GET_Y 0 0 0 0 0 0 0 1 0 0 0 0 1 
+state.FINISH 0 0 0 0 0 0 1 0 0 0 0 0 1 
+state.PREPARE 0 0 0 0 0 1 0 0 0 0 0 0 1 
+state.COMPUTE 0 0 0 0 1 0 0 0 0 0 0 0 1 
+state.SEND 0 0 0 1 0 0 0 0 0 0 0 0 1 
+state.BUFFER 0 0 1 0 0 0 0 0 0 0 0 0 1 
+state.BUFFER2 0 1 0 0 0 0 0 0 0 0 0 0 1 
+state.LOAD_RIGHT 1 0 0 0 0 0 0 0 0 0 0 0 1 
+
+State Machine - |DE2_115|rsa_qsys:my_qsys|Top:version1_0|Blur:B0|multDiv:DIV0|state
+Name state.OUT state.DIV state.MULT state.IDLE 
+state.IDLE 0 0 0 0 
+state.MULT 0 0 1 1 
+state.DIV 0 1 0 1 
+state.OUT 1 0 0 1 
+
+State Machine - |DE2_115|rsa_qsys:my_qsys|Top:version1_0|dark:d0|state
+Name state.OUTPUT_1 state.OUTPUT_0 state.LOAD_B state.LOAD_G state.LOAD_R state.PRE state.WAIT state.IDLE state.OUTPUT_ZERO 
+state.IDLE 0 0 0 0 0 0 0 0 0 
+state.WAIT 0 0 0 0 0 0 1 1 0 
+state.PRE 0 0 0 0 0 1 0 1 0 
+state.LOAD_R 0 0 0 0 1 0 0 1 0 
+state.LOAD_G 0 0 0 1 0 0 0 1 0 
+state.LOAD_B 0 0 1 0 0 0 0 1 0 
+state.OUTPUT_0 0 1 0 0 0 0 0 1 0 
+state.OUTPUT_1 1 0 0 0 0 0 0 1 0 
+state.OUTPUT_ZERO 0 0 0 0 0 0 0 1 1 
+
+State Machine - |DE2_115|rsa_qsys:my_qsys|Top:version1_0|VGA:VGA0|SRAM_state
+Name SRAM_state.SRAM_state_VGA_BLANK_SRAM_RESET SRAM_state.SRAM_state_VGA_DISPLAY_1_SRAM_B_TRANS SRAM_state.SRAM_state_VGA_DISPLAY_1_SRAM_B SRAM_state.SRAM_state_VGA_DISPLAY_1_SRAM_G SRAM_state.SRAM_state_VGA_DISPLAY_1_SRAM_R SRAM_state.SRAM_state_VGA_DISPLAY_0_SRAM_B_TRANS SRAM_state.SRAM_state_VGA_DISPLAY_0_SRAM_B SRAM_state.SRAM_state_VGA_DISPLAY_0_SRAM_G SRAM_state.SRAM_state_VGA_DISPLAY_0_SRAM_R SRAM_state.SRAM_state_VGA_BLANK_SRAM_PRE_ADDR_PLUS SRAM_state.SRAM_state_VGA_BLANK_SRAM_PRE_ADDR_PLUS_PRE SRAM_state.SRAM_state_VGA_BLANK_SRAM_PRE SRAM_state.SRAM_state_IDLE 
+SRAM_state.SRAM_state_IDLE 0 0 0 0 0 0 0 0 0 0 0 0 0 
+SRAM_state.SRAM_state_VGA_BLANK_SRAM_PRE 0 0 0 0 0 0 0 0 0 0 0 1 1 
+SRAM_state.SRAM_state_VGA_BLANK_SRAM_PRE_ADDR_PLUS_PRE 0 0 0 0 0 0 0 0 0 0 1 0 1 
+SRAM_state.SRAM_state_VGA_BLANK_SRAM_PRE_ADDR_PLUS 0 0 0 0 0 0 0 0 0 1 0 0 1 
+SRAM_state.SRAM_state_VGA_DISPLAY_0_SRAM_R 0 0 0 0 0 0 0 0 1 0 0 0 1 
+SRAM_state.SRAM_state_VGA_DISPLAY_0_SRAM_G 0 0 0 0 0 0 0 1 0 0 0 0 1 
+SRAM_state.SRAM_state_VGA_DISPLAY_0_SRAM_B 0 0 0 0 0 0 1 0 0 0 0 0 1 
+SRAM_state.SRAM_state_VGA_DISPLAY_0_SRAM_B_TRANS 0 0 0 0 0 1 0 0 0 0 0 0 1 
+SRAM_state.SRAM_state_VGA_DISPLAY_1_SRAM_R 0 0 0 0 1 0 0 0 0 0 0 0 1 
+SRAM_state.SRAM_state_VGA_DISPLAY_1_SRAM_G 0 0 0 1 0 0 0 0 0 0 0 0 1 
+SRAM_state.SRAM_state_VGA_DISPLAY_1_SRAM_B 0 0 1 0 0 0 0 0 0 0 0 0 1 
+SRAM_state.SRAM_state_VGA_DISPLAY_1_SRAM_B_TRANS 0 1 0 0 0 0 0 0 0 0 0 0 1 
+SRAM_state.SRAM_state_VGA_BLANK_SRAM_RESET 1 0 0 0 0 0 0 0 0 0 0 0 1 
+
+State Machine - |DE2_115|rsa_qsys:my_qsys|Top:version1_0|VGA:VGA0|VGA_state
+Name VGA_state.VGA_state_BLACK VGA_state.VGA_state_DISPLAY_0 VGA_state.VGA_state_BLANK VGA_state.VGA_state_IDLE VGA_state.VGA_state_RESET 
+VGA_state.VGA_state_IDLE 0 0 0 0 0 
+VGA_state.VGA_state_BLANK 0 0 1 1 0 
+VGA_state.VGA_state_DISPLAY_0 0 1 0 1 0 
+VGA_state.VGA_state_BLACK 1 0 0 1 0 
+VGA_state.VGA_state_RESET 0 0 0 1 1 
+
+State Machine - |DE2_115|rsa_qsys:my_qsys|Top:version1_0|ImageInitializer:init0|state
+Name state.IDLE state.FINISH state.GET_DATA 
+state.IDLE 0 0 0 
+state.GET_DATA 1 0 1 
+state.FINISH 1 1 0 

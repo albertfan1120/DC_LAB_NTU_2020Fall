@@ -1,0 +1,16 @@
+<sld_project_info>
+  <project>
+    <hash md5_digest_80b="5ef16e3be25db49581c5"/>
+  </project>
+  <file_info>
+    <file device="EP4CE115F29C7" path="DE2_115.sof" usercode="0xFFFFFFFF"/>
+  </file_info>
+  <sld_infos>
+    <sld_info hpath="rsa_qsys:my_qsys" name="my_qsys">
+      <assignment_values>
+        <assignment_value text="QSYS_NAME rsa_qsys HAS_SOPCINFO 1 GENERATION_ID 1609408773"/>
+      </assignment_values>
+      <parameters/>
+    </sld_info>
+  </sld_infos>
+</sld_project_info>

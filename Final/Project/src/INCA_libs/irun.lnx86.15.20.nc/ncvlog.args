@@ -1,0 +1,22 @@
+//
+// File created by:  ncverilog
+// Do not modify this file
+//
+-XLMODE
+./INCA_libs/irun.lnx86.15.20.nc
+-RUNMODE
+final_test.sv
+Top.sv
+ImageInitializer.sv
+VGA.sv
+my_VGA.sv
+dark.v
+-CDSLIB
+./INCA_libs/irun.lnx86.15.20.nc/cdsrun.lib
+-HDLVAR
+./INCA_libs/irun.lnx86.15.20.nc/hdlrun.var
+-MESSAGES
+-UPDATE
+-XLLIBSTORE
+./INCA_libs/irun.lnx86.15.20.nc/xllibs
+-ALLOWUNBOUND

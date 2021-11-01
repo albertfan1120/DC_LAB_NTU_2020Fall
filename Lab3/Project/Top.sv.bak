@@ -1,0 +1,684 @@
+module Top (
+	input i_rst_n,
+	input i_clk,
+	input i_key_0,			// record/pause
+	input i_key_1,			// play/pause
+	input i_key_2,			// stop
+	input [3:0] i_speed,	// speed (0~8)
+	input i_fast,			// fast/slow
+	input i_inte,			// 1/0 interpolation
+
+	
+	// AudDSP and SRAM
+	output [19:0] o_SRAM_ADDR,
+	inout  [15:0] io_SRAM_DQ,
+	output        o_SRAM_WE_N,
+	output        o_SRAM_CE_N,
+	output        o_SRAM_OE_N,
+	output        o_SRAM_LB_N,
+	output        o_SRAM_UB_N,
+	
+	// I2C
+	input  i_clk_100k,
+	output o_I2C_SCLK,
+	inout  io_I2C_SDAT,
+	
+	// AudPlayer
+	input  i_AUD_ADCDAT,
+	inout  i_AUD_ADCLRCK,
+	inout  i_AUD_BCLK,
+	inout  i_AUD_DACLRCK,
+	output o_AUD_DACDAT,
+
+	// SEVENDECODER (optional display)
+	output [15:0] 	o_sev,
+
+	// LCD (optional display)
+	// input        i_clk_800k,
+	// inout  [7:0] o_LCD_DATA,
+	// output       o_LCD_EN,
+	// output       o_LCD_RS,
+	// output       o_LCD_RW,
+	// output       o_LCD_ON,
+	// output       o_LCD_BLON,
+
+	// LED
+	output [25:0]	o_volume
+
+);
+
+// === params ===
+localparam S_IDLE		= 1;
+localparam S_PLAY       = 2;
+localparam S_PLAYP 		= 3;
+localparam S_RECD       = 4;
+localparam S_RECDP 		= 5;
+localparam S_BUFF		= 0;
+localparam S_INIT		= 7;
+
+localparam VOLUME_DROP = 16'b1 << 14;
+localparam VOLUME_BAR  = 56'b11111111111111111111111111000000000000000000000000000000;
+//localparam VOLUME_BAR  = {{26{1'b1}}, 30'b0};
+ 
+// === variables ===
+logic [2:0] 	state_r, state_w, state_des_r, state_des_w;
+logic [19:0]	addr_end_r, addr_end_w;		// the end address of the audio
+logic [2:0]		speed_r, speed_w;
+
+logic [15:0]	cnt_r, cnt_w;
+logic [4:0]		max_r, max_w;
+logic signed [15:0] 	volume_data;
+logic [15:0] 	volume;
+
+// === output assignments ===
+logic i2c_oen, i2c_sdat;
+logic [19:0] 	addr_record, addr_play;
+logic [15:0] 	data_record, data_play, dac_data;
+
+assign io_I2C_SDAT = (i2c_oen) ? i2c_sdat : 1'bz;
+
+assign o_SRAM_ADDR = (state_r==S_RECD || state_r == S_RECDP) ? addr_record : addr_play;
+assign io_SRAM_DQ  = (state_r==S_RECD || state_r == S_RECDP) ? data_record : 16'dz; // sram_dq as output
+assign data_play   = (state_r==S_RECD || state_r == S_RECDP) ? 16'd0 : io_SRAM_DQ; // sram_dq as input
+assign volume_data = ( state_r != S_PLAY ) ? data_record : dac_data;
+assign volume = ( volume_data >= 0 ) ?  volume_data : (-volume_data);
+
+assign o_SRAM_WE_N = (state_r==S_RECD || state_r == S_RECDP) ? 1'b0 : 1'b1;
+assign o_SRAM_CE_N = 1'b0;
+assign o_SRAM_OE_N = 1'b0;
+assign o_SRAM_LB_N = 1'b0;
+assign o_SRAM_UB_N = 1'b0;
+
+
+// === submodule i/o ===
+
+// i2c
+logic i2c_start, i2c_finished;
+
+// dsp
+logic dsp_pause, dsp_stop;
+
+// player
+logic player_en;
+
+// recorder
+logic recorder_start, recorder_pause, recorder_stop;
+
+// seven decoder
+logic [3:0] sev0, sev1, sev2, sev3;
+assign sev0 = {3'd0,i_clk_100k};
+assign sev1 = {3'd0,i_clk};
+assign sev2 = {3'd0,i_AUD_BCLK};
+assign sev3 = {1'd0,state_r};
+assign o_sev = { sev0, sev1, sev2, sev3 };
+
+assign o_volume = VOLUME_BAR[max_r+:25];
+
+
+// below is a simple example for module division
+// you can design these as you like
+
+// === I2cInitializer ===
+// sequentially sent out settings to initialize WM8731 with I2C protocal
+I2cInitializer init0(
+	.i_rst_n(i_rst_n),
+	.i_clk(i_clk_100k),
+	.i_start(1),
+	.o_finished(i2c_finished),
+	.o_sclk(o_I2C_SCLK),
+	.o_sdat(i2c_sdat),
+	.o_oen(i2c_oen) // you are outputing (you are not outputing only when you are "ack"ing.)
+);
+
+// === AudDSP ===
+// responsible for DSP operations including fast play and slow play at different speed
+// in other words, determine which data addr to be fetch for player 
+AudDSP dsp0(
+	.i_rst_n(i_rst_n),
+	.i_clk(i_clk),
+	.i_start(state_r==S_PLAY),
+	.i_pause(state_r==S_PLAYP),
+	.i_stop(state_r==S_IDLE),
+	.i_speed(speed_r),
+	.i_fast(i_fast),
+	.i_inte(i_inte),
+	.i_daclrck(i_AUD_DACLRCK),
+	.i_sram_data(data_play),
+	.o_dac_data(dac_data),
+	.o_sram_addr(addr_play),
+	.o_player_en(player_en)
+);
+
+// === AudPlayer ===
+// receive data address from DSP and fetch data to sent to WM8731 with I2S protocal
+AudPlayer player0(
+	.i_rst_n(i_rst_n),
+	.i_bclk(i_AUD_BCLK),
+	.i_daclrck(i_AUD_DACLRCK),
+	.i_en(player_en), // enable AudPlayer only when playing audio, work with AudDSP
+	.i_dac_data(dac_data), //dac_data
+	.o_aud_dacdat(o_AUD_DACDAT)
+);
+
+// === AudRecorder ===
+// receive data from WM8731 with I2S protocal and save to SRAM
+AudRecorder recorder0(
+	.i_rst_n(i_rst_n), 
+	.i_clk(i_AUD_BCLK),
+	.i_lrc(i_AUD_ADCLRCK),
+	.i_start(state_r==S_RECD),
+	.i_pause(state_r==S_RECDP),
+	.i_stop(state_r==S_IDLE),
+	.i_data(i_AUD_ADCDAT),
+	.o_address(addr_record),
+	.o_data(data_record)
+);
+
+/*
+Display display0(
+	.i_rst_n(i_rst_n),
+	.i_clk(i_AUD_BCLK),
+	.i_addr(display_addr),
+	.i_addr_end(addr_end_r),
+	.i_state(state_r),
+	.i_speed(speed_r),
+	.i_fast(i_fast_r),
+	.i_inte(i_inte_r)
+);*/
+
+always begin
+	//@o_AUD_DACDAT
+	//$display("output data: %1b", o_AUD_DACDAT, $time);
+	//@o_SRAM_ADDR;
+	//$display("end address: %2d, addr_play: %2d, sram_addr: %2d", addr_end_r, addr_play, o_SRAM_ADDR);
+end
+
+always_comb begin
+	cnt_w = (cnt_r >= VOLUME_DROP) ? 0 : cnt_r + 1;
+	if ( volume[14:10] > max_r ) max_w = volume[14:10];
+	else if (cnt_r >= VOLUME_DROP && max_r > 0) max_w = max_r - 1;
+	else max_w = max_r;
+end
+
+
+always_comb begin
+
+	// default values
+
+	speed_w = ( i_speed >= 1 && i_speed <= 8 ) ? i_speed-1 : 0;
+
+	state_w = state_r;
+	state_des_w = state_des_r;
+	addr_end_w = addr_end_r;
+
+	// rec, play
+	case(state_r)
+		S_INIT: begin
+			if (i2c_finished) begin
+				state_w = S_IDLE;
+			end
+		end
+		S_IDLE: begin
+			if (i_key_0) begin 				// start recording
+				addr_end_w = 0;
+				state_des_w = S_RECD;
+				state_w = S_BUFF;
+			end else if (i_key_1) begin		// start playing
+				state_des_w = S_PLAY;
+				state_w = S_BUFF;
+
+			end
+		end
+		S_RECD: begin
+			if (i_key_0) begin				// pause
+				state_des_w = S_RECDP;
+				state_w = S_BUFF;
+			end
+			addr_end_w = addr_record;
+		end
+		S_RECDP: begin
+			if (i_key_0) begin				// resume recording
+				state_des_w = S_RECD;
+				state_w = S_BUFF;
+			end
+		end
+		S_PLAY: begin
+			if (i_key_1) begin				// pause
+				state_des_w = S_PLAYP;
+				state_w = S_BUFF;
+			end
+		end
+		S_PLAYP: begin
+			if (i_key_1) begin				// resume 
+				state_des_w = S_PLAY;
+				state_w = S_BUFF;
+			end
+		end
+		S_BUFF: begin
+			if (!i_key_0 && !i_key_1) begin
+				state_w = state_des_r;
+			end
+		end
+	endcase
+
+	// stop
+	case(state_r)
+		S_RECD, S_RECDP: begin
+			if (i_key_2 || addr_record == 20'b11111111111111111110 ) begin		// stop recording
+				state_w = S_IDLE;
+			end
+		end
+		S_PLAY, S_PLAYP: begin
+			if (i_key_2 || speed_r + addr_play >= addr_end_r) begin		// stop playing
+				state_w = S_IDLE;
+			end
+		end
+	endcase
+end
+
+always_ff @(posedge i_clk or negedge i_rst_n) begin
+	if (!i_rst_n) begin
+		state_r 	<= S_INIT;
+		state_des_r <= 0;
+		addr_end_r 	<= 0;
+		speed_r 	<= 0;
+		cnt_r 		<= 0;
+		max_r		<= 0;
+	end
+	else begin
+		state_r 	<= state_w;
+		state_des_r <= state_des_w;
+		addr_end_r 	<= addr_end_w;
+		speed_r 	<= speed_w;
+		cnt_r		<= cnt_w;
+		max_r		<= max_w;
+	end
+end
+
+endmodule
+
+
+
+module I2cInitializer(
+    input  i_rst_n,
+    input  i_clk,
+    input  i_start,
+    output o_finished, //
+    output o_sclk,    
+    output o_sdat,    
+    output o_oen     // for every 8-bit data sent
+);
+
+
+localparam logic [23:0] config_data[6:0] = '{
+    24'b0011_0100_000_1111_0_0000_0000,
+    24'b0011_0100_000_0100_0_0001_0101,
+    24'b0011_0100_000_0101_0_0000_0000,
+    24'b0011_0100_000_0110_0_0000_0000,
+    24'b0011_0100_000_0111_0_0100_0010,
+    24'b0011_0100_000_1000_0_0001_1001,
+    24'b0011_0100_000_1001_0_0000_0001
+} ;
+
+/* satates */
+localparam S_IDLE = 0;
+localparam S_TX   = 1;
+
+logic o_sclk_r, o_sclk_w;
+logic o_sdat_r, o_sdat_w;
+logic[3:0] state_r, state_w;
+logic o_finished_r, o_finished_w;
+logic[5:0] bit_cnt_r, bit_cnt_w;
+logic[3:0] conf_cnt_r, conf_cnt_w;
+logic ack_r, ack_w;
+
+/* ouput assignments */
+assign o_finished = o_finished_r;
+assign o_oen = ~ack_r;
+assign o_sclk = o_sclk_r;
+assign o_sdat = o_sdat_r;
+
+
+/* combinational */
+always_comb begin
+    state_w  = state_r;
+    o_sclk_w = o_sclk_r;
+    o_sdat_w = o_sdat_r;
+    o_finished_w = o_finished_r;
+    conf_cnt_w = conf_cnt_r;
+    bit_cnt_w = bit_cnt_r;
+    ack_w = ack_r;
+
+    case(state_r)
+        S_IDLE: begin
+            o_finished_w = 1; 
+            o_sclk_w = 1'd1;
+            o_sdat_w = 1'd1;
+            if(i_start) begin
+                state_w = S_TX;
+                o_sdat_w = 0;
+            end
+        end
+        S_TX : begin
+            o_sclk_w = ~o_sclk_r;
+            if(o_sclk_r) begin // negedge of sclk
+                if( !ack_r && bit_cnt_r%8==0 && bit_cnt_r!=0) begin // ack for every 8 bits
+                    bit_cnt_w = (bit_cnt_r==24) ? 0 : bit_cnt_r;
+                    conf_cnt_w = (bit_cnt_r==24) ? (conf_cnt_r+1) : conf_cnt_r;
+                    o_sdat_w = 1'bz;
+                    ack_w = 1'd1;
+                end
+                else begin // read bit
+                    ack_w = 1'd0;
+                    o_sdat_w = config_data[ conf_cnt_r ][ 23-bit_cnt_r ];
+                    bit_cnt_w = bit_cnt_r+1;
+                end
+            end
+            else if( conf_cnt_w > 6) begin // finished 24*7 bits setting
+                state_w = state_w;
+                o_sclk_w = 1'd1;
+                o_sdat_w = 1'd0;
+                o_finished_w = 1'd1;
+            end
+        end
+    endcase
+end
+
+/* sequential */
+always_ff @ (posedge i_clk or negedge i_rst_n) begin
+    if(!i_rst_n) begin
+        state_r <= S_IDLE;
+        o_finished_r <= 0;
+        o_sclk_r <= 1;
+        o_sdat_r <= 1;
+        bit_cnt_r <= 0;
+        conf_cnt_r <= 0;
+        ack_r <= 0;
+    end
+    else begin
+        state_r <= state_w;
+        o_finished_r <= o_finished_w;
+        o_sclk_r <= o_sclk_w;
+        o_sdat_r <= o_sdat_w;
+        bit_cnt_r <= bit_cnt_w;
+        conf_cnt_r <= conf_cnt_w;
+        ack_r <= ack_w;
+    end
+
+end
+endmodule
+
+// === AudRecorder ===
+// receive data from WM8731 with I2S protocal and save to SRAM
+module AudRecorder(
+	input           i_rst_n, 
+	input           i_clk,
+	input           i_lrc,
+	input           i_start,
+	input           i_pause,
+	input           i_stop,
+	input           i_data,
+	output [19:0]   o_address,
+	output [15:0]   o_data
+);
+
+// === Params ===
+localparam S_IDLE = 0;
+localparam S_READ = 1;
+localparam S_SAVE = 2;
+localparam S_WAIT_1 = 3;
+localparam S_WAIT_2 = 4;
+
+// === Variables ===
+logic [2:0]		state_r, state_w;
+logic [19:0]	addr_r, addr_w;
+logic [15:0]	data_r, data_w;
+logic [3:0]		cnt_r, cnt_w;
+
+// === Output Assignment ===
+assign o_address = addr_r;
+assign o_data 	 = (state_r == S_SAVE) ? data_r : '0;
+
+// === Combinational ===
+always_comb begin
+
+	// default values
+	state_w = state_r;
+	addr_w = addr_r;
+	data_w = data_r;
+	cnt_w = cnt_r;
+
+	case(state_r)
+		S_IDLE: begin
+			if ( i_start ) begin
+				state_w = (i_lrc) ? S_WAIT_2 : S_WAIT_1;
+				addr_w = 0;
+			end
+		end
+		S_WAIT_1: begin 	// wait for LRC to rise
+			if ( i_lrc == 1 ) begin state_w = S_WAIT_2; end
+		end
+		S_WAIT_2: begin 	// wait for LRC to drop
+			if ( i_lrc == 0 ) begin state_w = S_READ; end
+			cnt_w = 0;
+		end
+		S_READ: begin		// read 16 bits
+			data_w = { data_r[14:0], i_data };
+			cnt_w = ( cnt_r == 15 ) ? 0 : cnt_r + 1;
+			state_w = ( cnt_r == 15 ) ? S_SAVE : state_w;
+		end
+		S_SAVE: begin		// change address
+			addr_w = addr_r + 1;
+			state_w = S_WAIT_1;
+			//$display("addr= %5x, data= %16b", addr_r, data_r);
+		end
+	endcase
+	
+	if ( i_pause || i_stop ) begin
+		state_w = S_IDLE;
+	end
+
+end
+
+// === Sequential ===
+always_ff @ ( posedge i_clk or negedge i_rst_n ) begin
+	if ( !i_rst_n ) begin
+		cnt_r <= 0;
+		addr_r <= 0;
+		data_r <= 0;
+		state_r <= S_IDLE;
+	end
+	else begin
+		cnt_r <= cnt_w;
+		addr_r <= addr_w;
+		data_r <= data_w;
+		state_r <= state_w;
+		
+	end
+
+end
+
+endmodule
+
+// === AudPlayer ===
+// receive data address from DSP and fetch data to sent to WM8731 with I2S protocal
+module AudPlayer(
+	input           i_rst_n,
+	input           i_bclk,
+	input           i_daclrck,
+	input           i_en, // enable AudPlayer only when playing audio, work with AudDSP
+	input [15:0]    i_dac_data, //dac_data
+	output          o_aud_dacdat
+);
+
+// === params ===
+localparam S_WAIT = 1;
+localparam S_SEND = 0;
+
+// === variables ===
+logic [1:0]		state_r, state_w;
+logic [15:0]	data_r, data_w;
+logic [3:0]		cnt_r, cnt_w;
+logic 			lrc_r;
+
+// === output assignment ===
+assign o_aud_dacdat = ( state_r == S_SEND ) ? data_r[cnt_r] : 0;
+
+// === combinational ===
+
+always_comb begin
+
+	// default values
+	state_w = state_r; 
+	data_w = data_r;
+	cnt_w = cnt_r;
+
+	if ( i_en ) begin
+		case(state_r)
+			S_WAIT: begin		// wait for lrc to rise
+				if ( i_daclrck != lrc_r ) begin
+					state_w = S_SEND;
+					data_w = ( i_daclrck ) ? data_r : i_dac_data;
+					cnt_w = 15;
+				end
+			end
+			S_SEND: begin
+				state_w = (cnt_r == 0) ? S_WAIT : state_w;
+				cnt_w = (cnt_r == 0) ? 15 : cnt_r - 1;
+			end
+		endcase
+	end else begin
+		state_w = S_WAIT;
+	end
+end
+
+// === sequential ===
+
+always_ff @(posedge i_bclk or negedge i_rst_n) begin
+	if ( !i_rst_n ) begin
+		cnt_r <= 0;
+		data_r <= 0;
+		lrc_r <= 0;
+		state_r <= S_WAIT;
+	end else begin
+		cnt_r <= cnt_w;
+		data_r <= data_w;
+		state_r <= state_w;
+		lrc_r <= i_daclrck;
+	end
+end
+
+endmodule
+
+module AudDSP(
+    input           i_rst_n,
+    input           i_clk,
+    input           i_start,		// start or resume playing 
+    input           i_pause,		// pause
+    input           i_stop,			// stop
+    input [2:0]     i_speed,		// 0~7 (represent 1~8)
+    input           i_fast,			// 1 -> fast, 0 -> slow
+    input           i_inte,			// 1 or 0 order interpolation
+    input           i_daclrck,		
+    input signed [15:0] i_sram_data,	// the 16-bit data stored in sram
+	output [15:0]	o_dac_data,		// AudPlayer will send this data to wm8731
+	output [19:0]	o_sram_addr,	// sram address
+    output          o_player_en		// enable AudPlayer
+);
+
+logic o_en_r, o_en_w;
+logic [3:0]  state_r, state_w;
+logic [19:0] o_addr_r, o_addr_w;
+logic signed [15:0] prev_data_r, prev_data_w;
+logic [15:0] o_data_r, o_data_w;
+logic [3:0] cnt_r, cnt_w;
+
+localparam S_IDLE  = 0;
+localparam S_FAST  = 2;
+localparam S_SLOW  = 1;
+localparam S_WAIT1 = 4; // lrc = 0
+localparam S_WAIT2 = 5; // lrc = 1
+
+// ouput assignments
+
+assign o_dac_data = o_data_r;
+assign o_sram_addr = o_addr_r;
+assign o_player_en = o_en_r;
+
+
+always_comb begin
+
+    //default values
+    state_w = state_r;
+    o_addr_w = o_addr_r;
+    prev_data_w = prev_data_r;
+    o_data_w = o_data_r;
+    cnt_w = cnt_r;
+    o_en_w = o_en_r;
+
+    // signal processing
+    case(state_r)
+        S_FAST: begin
+            prev_data_w = i_sram_data;
+            o_addr_w = o_addr_r + 1 + i_speed;
+            o_data_w = i_sram_data;
+        end
+        S_SLOW: begin
+            if (cnt_r < i_speed) begin
+                cnt_w = cnt_r + 1;
+                if ( i_inte ) begin
+                    o_data_w = prev_data_r + $signed(i_sram_data - prev_data_r) * (cnt_r+1) / (i_speed+1);
+                end else begin
+                    o_data_w = prev_data_r;
+                end
+            end else begin                      // play i_sram_data and change next addr
+                cnt_w = 0;
+                o_data_w = i_sram_data;
+                prev_data_w = i_sram_data;
+                o_addr_w = o_addr_r + 1;
+            end
+        end
+    endcase
+
+    // state switch & common 
+    case(state_r)
+        S_IDLE: begin // stop || rst_n
+            if (i_start) state_w = S_WAIT2;
+            o_en_w = 0;
+            o_data_w = 0;
+        end
+        S_WAIT1: begin // wait for lrc to drop -> en = 1
+            state_w = (!i_daclrck) ? S_WAIT2 : state_r;
+            if (!i_daclrck) o_en_w = 1;
+        end
+        S_WAIT2: begin // send data, wait for lrc to rise -> calculate
+            if ( i_daclrck ) state_w = i_fast ? S_FAST : S_SLOW;
+        end
+        S_FAST, S_SLOW: begin
+            state_w = S_WAIT1;
+        end
+    endcase
+
+    if ( i_pause || i_stop ) state_w = S_IDLE;
+    if ( i_stop ) o_addr_w = 0;
+end
+
+always_ff @(posedge i_clk or negedge i_rst_n ) begin
+    if(!i_rst_n) begin
+        state_r     <= S_IDLE;
+        o_addr_r    <= 0;
+        prev_data_r <= 0;
+        o_data_r    <= 0;
+        cnt_r       <= 0;
+        o_en_r      <= 0;
+    end else begin
+        state_r     <= state_w;
+        o_addr_r    <= o_addr_w;
+        prev_data_r <= prev_data_w;
+        o_data_r    <= o_data_w;
+        cnt_r       <= cnt_w;
+        o_en_r      <= o_en_w;
+    end
+end
+
+endmodule

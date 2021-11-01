@@ -1,0 +1,173 @@
+------------------------------------------------------------
+TimeQuest Timing Analyzer Summary
+------------------------------------------------------------
+
+Type  : Slow 1200mV 85C Model Setup 'my_qsys|altpll_0|sd1|pll7|clk[1]'
+Slack : 5.148
+TNS   : 0.000
+
+Type  : Slow 1200mV 85C Model Setup 'my_qsys|altpll_0|sd1|pll7|clk[0]'
+Slack : 8.322
+TNS   : 0.000
+
+Type  : Slow 1200mV 85C Model Hold 'my_qsys|altpll_0|sd1|pll7|clk[0]'
+Slack : 0.289
+TNS   : 0.000
+
+Type  : Slow 1200mV 85C Model Hold 'my_qsys|altpll_0|sd1|pll7|clk[1]'
+Slack : 0.402
+TNS   : 0.000
+
+Type  : Slow 1200mV 85C Model Recovery 'my_qsys|altpll_0|sd1|pll7|clk[1]'
+Slack : 9.200
+TNS   : 0.000
+
+Type  : Slow 1200mV 85C Model Recovery 'my_qsys|altpll_0|sd1|pll7|clk[0]'
+Slack : 35.500
+TNS   : 0.000
+
+Type  : Slow 1200mV 85C Model Removal 'my_qsys|altpll_0|sd1|pll7|clk[1]'
+Slack : 3.335
+TNS   : 0.000
+
+Type  : Slow 1200mV 85C Model Removal 'my_qsys|altpll_0|sd1|pll7|clk[0]'
+Slack : 3.444
+TNS   : 0.000
+
+Type  : Slow 1200mV 85C Model Minimum Pulse Width 'my_qsys|altpll_0|sd1|pll7|clk[1]'
+Slack : 6.373
+TNS   : 0.000
+
+Type  : Slow 1200mV 85C Model Minimum Pulse Width 'CLOCK_50'
+Slack : 9.819
+TNS   : 0.000
+
+Type  : Slow 1200mV 85C Model Minimum Pulse Width 'CLOCK2_50'
+Slack : 16.000
+TNS   : 0.000
+
+Type  : Slow 1200mV 85C Model Minimum Pulse Width 'CLOCK3_50'
+Slack : 16.000
+TNS   : 0.000
+
+Type  : Slow 1200mV 85C Model Minimum Pulse Width 'my_qsys|altpll_0|sd1|pll7|clk[0]'
+Slack : 19.705
+TNS   : 0.000
+
+Type  : Slow 1200mV 85C Model Minimum Pulse Width 'AUD_BCLK'
+Slack : 78.790
+TNS   : 0.000
+
+Type  : Slow 1200mV 0C Model Setup 'my_qsys|altpll_0|sd1|pll7|clk[1]'
+Slack : 5.759
+TNS   : 0.000
+
+Type  : Slow 1200mV 0C Model Setup 'my_qsys|altpll_0|sd1|pll7|clk[0]'
+Slack : 8.753
+TNS   : 0.000
+
+Type  : Slow 1200mV 0C Model Hold 'my_qsys|altpll_0|sd1|pll7|clk[0]'
+Slack : 0.271
+TNS   : 0.000
+
+Type  : Slow 1200mV 0C Model Hold 'my_qsys|altpll_0|sd1|pll7|clk[1]'
+Slack : 0.354
+TNS   : 0.000
+
+Type  : Slow 1200mV 0C Model Recovery 'my_qsys|altpll_0|sd1|pll7|clk[1]'
+Slack : 9.604
+TNS   : 0.000
+
+Type  : Slow 1200mV 0C Model Recovery 'my_qsys|altpll_0|sd1|pll7|clk[0]'
+Slack : 35.932
+TNS   : 0.000
+
+Type  : Slow 1200mV 0C Model Removal 'my_qsys|altpll_0|sd1|pll7|clk[1]'
+Slack : 2.975
+TNS   : 0.000
+
+Type  : Slow 1200mV 0C Model Removal 'my_qsys|altpll_0|sd1|pll7|clk[0]'
+Slack : 3.072
+TNS   : 0.000
+
+Type  : Slow 1200mV 0C Model Minimum Pulse Width 'my_qsys|altpll_0|sd1|pll7|clk[1]'
+Slack : 6.375
+TNS   : 0.000
+
+Type  : Slow 1200mV 0C Model Minimum Pulse Width 'CLOCK_50'
+Slack : 9.799
+TNS   : 0.000
+
+Type  : Slow 1200mV 0C Model Minimum Pulse Width 'CLOCK2_50'
+Slack : 16.000
+TNS   : 0.000
+
+Type  : Slow 1200mV 0C Model Minimum Pulse Width 'CLOCK3_50'
+Slack : 16.000
+TNS   : 0.000
+
+Type  : Slow 1200mV 0C Model Minimum Pulse Width 'my_qsys|altpll_0|sd1|pll7|clk[0]'
+Slack : 19.709
+TNS   : 0.000
+
+Type  : Slow 1200mV 0C Model Minimum Pulse Width 'AUD_BCLK'
+Slack : 78.790
+TNS   : 0.000
+
+Type  : Fast 1200mV 0C Model Setup 'my_qsys|altpll_0|sd1|pll7|clk[1]'
+Slack : 8.860
+TNS   : 0.000
+
+Type  : Fast 1200mV 0C Model Setup 'my_qsys|altpll_0|sd1|pll7|clk[0]'
+Slack : 10.680
+TNS   : 0.000
+
+Type  : Fast 1200mV 0C Model Hold 'my_qsys|altpll_0|sd1|pll7|clk[0]'
+Slack : 0.101
+TNS   : 0.000
+
+Type  : Fast 1200mV 0C Model Hold 'my_qsys|altpll_0|sd1|pll7|clk[1]'
+Slack : 0.181
+TNS   : 0.000
+
+Type  : Fast 1200mV 0C Model Recovery 'my_qsys|altpll_0|sd1|pll7|clk[1]'
+Slack : 11.102
+TNS   : 0.000
+
+Type  : Fast 1200mV 0C Model Recovery 'my_qsys|altpll_0|sd1|pll7|clk[0]'
+Slack : 37.575
+TNS   : 0.000
+
+Type  : Fast 1200mV 0C Model Removal 'my_qsys|altpll_0|sd1|pll7|clk[1]'
+Slack : 1.708
+TNS   : 0.000
+
+Type  : Fast 1200mV 0C Model Removal 'my_qsys|altpll_0|sd1|pll7|clk[0]'
+Slack : 1.774
+TNS   : 0.000
+
+Type  : Fast 1200mV 0C Model Minimum Pulse Width 'my_qsys|altpll_0|sd1|pll7|clk[1]'
+Slack : 6.446
+TNS   : 0.000
+
+Type  : Fast 1200mV 0C Model Minimum Pulse Width 'CLOCK_50'
+Slack : 9.400
+TNS   : 0.000
+
+Type  : Fast 1200mV 0C Model Minimum Pulse Width 'CLOCK2_50'
+Slack : 16.000
+TNS   : 0.000
+
+Type  : Fast 1200mV 0C Model Minimum Pulse Width 'CLOCK3_50'
+Slack : 16.000
+TNS   : 0.000
+
+Type  : Fast 1200mV 0C Model Minimum Pulse Width 'my_qsys|altpll_0|sd1|pll7|clk[0]'
+Slack : 19.779
+TNS   : 0.000
+
+Type  : Fast 1200mV 0C Model Minimum Pulse Width 'AUD_BCLK'
+Slack : 79.000
+TNS   : 0.000
+
+------------------------------------------------------------

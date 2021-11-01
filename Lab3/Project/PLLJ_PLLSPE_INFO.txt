@@ -1,0 +1,5 @@
+PLL_Name	pll:X000000|pll_altpll_1:altpll_1|pll_altpll_1_altpll_p642:sd1|pll7
+PLLJITTER	30
+PLLSPEmax	84
+PLLSPEmin	-53
+

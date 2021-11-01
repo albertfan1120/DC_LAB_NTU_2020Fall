@@ -1,0 +1,29 @@
+
+State Machine - |DE2_115|Top:top0|AudRecorder:recorder0|state
+Name state.READ state.WAIT_R state.WAIT_L state.IDLE state.SAVE 
+state.IDLE 0 0 0 0 0 
+state.WAIT_L 0 0 1 1 0 
+state.WAIT_R 0 1 0 1 0 
+state.READ 1 0 0 1 0 
+state.SAVE 0 0 0 1 1 
+
+State Machine - |DE2_115|Top:top0|AudPlayer:player0|state_r
+Name state_r.S_SEND 
+state_r.S_WAIT 0 
+state_r.S_SEND 1 
+
+State Machine - |DE2_115|Top:top0|AudDSP:dsp0|state
+Name state.SLOW state.FAST state.PREPARE state.IDLE state.WAIT 
+state.IDLE 0 0 0 0 0 
+state.PREPARE 0 0 1 1 0 
+state.FAST 0 1 0 1 0 
+state.SLOW 1 0 0 1 0 
+state.WAIT 0 0 0 1 1 
+
+State Machine - |DE2_115|Top:top0|I2cInitializer:init0|state
+Name state.CHECK state.SEND state.PREPARE state.IDLE state.FINISH 
+state.IDLE 0 0 0 0 0 
+state.PREPARE 0 0 1 1 0 
+state.SEND 0 1 0 1 0 
+state.CHECK 1 0 0 1 0 
+state.FINISH 0 0 0 1 1 

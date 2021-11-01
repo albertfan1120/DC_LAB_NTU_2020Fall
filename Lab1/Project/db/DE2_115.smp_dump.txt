@@ -1,0 +1,8 @@
+
+State Machine - |DE2_115|Top:top0|state
+Name state.RUN_SLOW state.RUN_MID state.RUN_FAST state.IDLE state.READY 
+state.IDLE 0 0 0 0 0 
+state.RUN_FAST 0 0 1 1 0 
+state.RUN_MID 0 1 0 1 0 
+state.RUN_SLOW 1 0 0 1 0 
+state.READY 0 0 0 1 1 

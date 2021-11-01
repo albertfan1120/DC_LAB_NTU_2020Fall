@@ -1,0 +1,149 @@
+------------------------------------------------------------
+TimeQuest Timing Analyzer Summary
+------------------------------------------------------------
+
+Type  : Slow 1200mV 85C Model Setup 'X000000|altpll_1|sd1|pll7|clk[1]'
+Slack : -9.932
+TNS   : -183.677
+
+Type  : Slow 1200mV 85C Model Setup 'AUD_BCLK'
+Slack : -3.164
+TNS   : -69.249
+
+Type  : Slow 1200mV 85C Model Setup 'X000000|altpll_1|sd1|pll7|clk[0]'
+Slack : 9993.447
+TNS   : 0.000
+
+Type  : Slow 1200mV 85C Model Hold 'X000000|altpll_1|sd1|pll7|clk[1]'
+Slack : 0.401
+TNS   : 0.000
+
+Type  : Slow 1200mV 85C Model Hold 'X000000|altpll_1|sd1|pll7|clk[0]'
+Slack : 0.402
+TNS   : 0.000
+
+Type  : Slow 1200mV 85C Model Hold 'AUD_BCLK'
+Slack : 0.440
+TNS   : 0.000
+
+Type  : Slow 1200mV 85C Model Minimum Pulse Width 'CLOCK_50'
+Slack : 9.819
+TNS   : 0.000
+
+Type  : Slow 1200mV 85C Model Minimum Pulse Width 'CLOCK2_50'
+Slack : 16.000
+TNS   : 0.000
+
+Type  : Slow 1200mV 85C Model Minimum Pulse Width 'CLOCK3_50'
+Slack : 16.000
+TNS   : 0.000
+
+Type  : Slow 1200mV 85C Model Minimum Pulse Width 'AUD_BCLK'
+Slack : 41.039
+TNS   : 0.000
+
+Type  : Slow 1200mV 85C Model Minimum Pulse Width 'X000000|altpll_1|sd1|pll7|clk[1]'
+Slack : 41.368
+TNS   : 0.000
+
+Type  : Slow 1200mV 85C Model Minimum Pulse Width 'X000000|altpll_1|sd1|pll7|clk[0]'
+Slack : 4999.711
+TNS   : 0.000
+
+Type  : Slow 1200mV 0C Model Setup 'X000000|altpll_1|sd1|pll7|clk[1]'
+Slack : -9.034
+TNS   : -166.787
+
+Type  : Slow 1200mV 0C Model Setup 'AUD_BCLK'
+Slack : -3.020
+TNS   : -66.237
+
+Type  : Slow 1200mV 0C Model Setup 'X000000|altpll_1|sd1|pll7|clk[0]'
+Slack : 9993.990
+TNS   : 0.000
+
+Type  : Slow 1200mV 0C Model Hold 'X000000|altpll_1|sd1|pll7|clk[0]'
+Slack : 0.353
+TNS   : 0.000
+
+Type  : Slow 1200mV 0C Model Hold 'X000000|altpll_1|sd1|pll7|clk[1]'
+Slack : 0.353
+TNS   : 0.000
+
+Type  : Slow 1200mV 0C Model Hold 'AUD_BCLK'
+Slack : 0.387
+TNS   : 0.000
+
+Type  : Slow 1200mV 0C Model Minimum Pulse Width 'CLOCK_50'
+Slack : 9.799
+TNS   : 0.000
+
+Type  : Slow 1200mV 0C Model Minimum Pulse Width 'CLOCK2_50'
+Slack : 16.000
+TNS   : 0.000
+
+Type  : Slow 1200mV 0C Model Minimum Pulse Width 'CLOCK3_50'
+Slack : 16.000
+TNS   : 0.000
+
+Type  : Slow 1200mV 0C Model Minimum Pulse Width 'AUD_BCLK'
+Slack : 41.175
+TNS   : 0.000
+
+Type  : Slow 1200mV 0C Model Minimum Pulse Width 'X000000|altpll_1|sd1|pll7|clk[1]'
+Slack : 41.356
+TNS   : 0.000
+
+Type  : Slow 1200mV 0C Model Minimum Pulse Width 'X000000|altpll_1|sd1|pll7|clk[0]'
+Slack : 4999.711
+TNS   : 0.000
+
+Type  : Fast 1200mV 0C Model Setup 'X000000|altpll_1|sd1|pll7|clk[1]'
+Slack : -4.997
+TNS   : -93.927
+
+Type  : Fast 1200mV 0C Model Setup 'AUD_BCLK'
+Slack : -1.777
+TNS   : -42.660
+
+Type  : Fast 1200mV 0C Model Setup 'X000000|altpll_1|sd1|pll7|clk[0]'
+Slack : 9996.765
+TNS   : 0.000
+
+Type  : Fast 1200mV 0C Model Hold 'X000000|altpll_1|sd1|pll7|clk[0]'
+Slack : 0.181
+TNS   : 0.000
+
+Type  : Fast 1200mV 0C Model Hold 'X000000|altpll_1|sd1|pll7|clk[1]'
+Slack : 0.181
+TNS   : 0.000
+
+Type  : Fast 1200mV 0C Model Hold 'AUD_BCLK'
+Slack : 0.201
+TNS   : 0.000
+
+Type  : Fast 1200mV 0C Model Minimum Pulse Width 'CLOCK_50'
+Slack : 9.400
+TNS   : 0.000
+
+Type  : Fast 1200mV 0C Model Minimum Pulse Width 'CLOCK2_50'
+Slack : 16.000
+TNS   : 0.000
+
+Type  : Fast 1200mV 0C Model Minimum Pulse Width 'CLOCK3_50'
+Slack : 16.000
+TNS   : 0.000
+
+Type  : Fast 1200mV 0C Model Minimum Pulse Width 'AUD_BCLK'
+Slack : 40.537
+TNS   : 0.000
+
+Type  : Fast 1200mV 0C Model Minimum Pulse Width 'X000000|altpll_1|sd1|pll7|clk[1]'
+Slack : 41.445
+TNS   : 0.000
+
+Type  : Fast 1200mV 0C Model Minimum Pulse Width 'X000000|altpll_1|sd1|pll7|clk[0]'
+Slack : 4999.782
+TNS   : 0.000
+
+------------------------------------------------------------
